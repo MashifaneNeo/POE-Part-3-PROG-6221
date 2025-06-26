@@ -153,7 +153,37 @@ namespace ST10449143_PROGPOEPART3
             CurrentQuestionIndex = 0;
             Score = 0;
             IsQuizActive = true;
+            IsQuizPaused = false;
             DisplayCurrentQuestion();
+        }
+
+
+        public void ResumeQuiz()
+        {
+            if (!IsQuizActive && CurrentQuestionIndex < Questions.Count)
+            {
+                IsQuizActive = true;
+                IsQuizPaused = false;
+                DisplayCurrentQuestion();
+            }
+            else
+            {
+                AddMessage("There's no quiz to continue.", Brushes.Gray);
+            }
+        }
+
+        public void StopQuiz()
+        {
+            if (IsQuizActive)
+            {
+                IsQuizPaused = true;
+                IsQuizActive = false;
+                AddMessage("Quiz paused. Type 'continue quiz' to resume.", Brushes.Orange);
+            }
+            else
+            {
+                AddMessage("Quiz is not currently running.", Brushes.Gray);
+            }
         }
 
         public void DisplayCurrentQuestion()
@@ -177,6 +207,12 @@ namespace ST10449143_PROGPOEPART3
 
         public void ProcessAnswer(string input)
         {
+            if (!IsQuizActive)
+            {
+                AddMessage("Quiz is paused. Type 'continue quiz' to resume.", Brushes.Gray);
+                return;
+            }
+
             if (int.TryParse(input, out int answer) &&
                 answer >= 1 &&
                 answer <= Questions[CurrentQuestionIndex].Options.Count)
@@ -205,6 +241,7 @@ namespace ST10449143_PROGPOEPART3
         private void EndQuiz()
         {
             IsQuizActive = false;
+            IsQuizPaused = false;
             double percentage = (double)Score / Questions.Count * 100;
             AddMessage($"Quiz complete! Your score: {Score}/{Questions.Count} ({percentage:0}%)", Brushes.Purple);
 

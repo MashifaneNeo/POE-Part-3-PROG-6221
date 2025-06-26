@@ -7,7 +7,7 @@
             <StackPanel Name="ChatPanel" Margin="10"/>
         </ScrollViewer>
 
-        <TextBox Name="InputBox" Height="30" VerticalAlignment="Bottom" Margin="10,0,90,10"/>
+        <TextBox Name="InputBox" Height="30" VerticalAlignment="Bottom" Margin="336,0,90,10"/>
         <Button Content="Send" Width="70" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,10,10" Click="SendButton_Click"/>
     </Grid>
 </Window>

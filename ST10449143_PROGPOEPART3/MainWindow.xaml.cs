@@ -43,15 +43,15 @@ namespace ST10449143_PROGPOEPart3
         }
 
         private void InitializeApplicationComponents()
-        {
-            chatbot = new PreviousWork("User", AddMessage);
+        {            
             cyberQuiz = new CyberSecurityQuiz(AddMessage);
             nlpProcessor = new NLPProcessor();
         }
 
         private void AskForUserName()
         {
-            AddMessage("Before we begin, may I know your name?", Brushes.DarkSlateBlue);
+            AddMessage("Hello! Welcome to the" +
+                " Cybersecurity chatbot. Before we begin, may I know your name?", Brushes.DarkSlateBlue);
         }
 
         private void SendButton_Click(object sender, RoutedEventArgs e)
@@ -67,18 +67,35 @@ namespace ST10449143_PROGPOEPart3
             {
                 userName = input;
                 awaitingName = false;
-                AddMessage($"Nice to meet you, {userName}! I'm your Cybersecurity Assistant. im here to aid you in " +
-                    $"matter related to cybersecurity.", Brushes.MediumSeaGreen);
+                AddMessage($"Nice to meet you, {userName}! I'm your Cybersecurity Assistant. I'm here to aid you in matters related to cybersecurity.", Brushes.MediumSeaGreen);
                 return;
             }
 
+            // Stop the quiz
+            if (input.Equals("stop quiz", StringComparison.OrdinalIgnoreCase))
+            {
+                cyberQuiz.StopQuiz();
+                LogActivity($"Quiz paused by {userName} at question {cyberQuiz.QuestionsAnswered + 1}.");
+                return;
+            }
+
+            // Continue the quiz
+            if (input.Equals("continue quiz", StringComparison.OrdinalIgnoreCase))
+            {
+                cyberQuiz.ResumeQuiz();
+                LogActivity($"Quiz resumed by {userName} at question {cyberQuiz.QuestionsAnswered + 1}.");
+                return;
+            }
+
+            // If quiz is active, process the answer
             if (cyberQuiz.IsQuizActive)
             {
                 cyberQuiz.ProcessAnswer(input);
-                LogActivity($"Quiz answer processed by {userName}.");
+                LogActivity($"Quiz answer processed by {userName}. Question {cyberQuiz.QuestionsAnswered}.");
                 return;
             }
 
+            // Reminder after task
             if (pendingTask != null && input.StartsWith("remind me in ", StringComparison.OrdinalIgnoreCase))
             {
                 ProcessReminderInput(input);
@@ -357,6 +374,12 @@ namespace ST10449143_PROGPOEPart3
             {
                 AddMessage($"{userName}, your activity log is currently empty.", Brushes.Gray);
                 return;
+            }
+
+            // Show quiz progress if in progress and not completed
+            if (cyberQuiz.QuestionsAnswered > 0 && cyberQuiz.QuestionsAnswered < cyberQuiz.Questions.Count)
+            {
+                AddMessage($"{userName}, you have answered {cyberQuiz.QuestionsAnswered} out of {cyberQuiz.Questions.Count} quiz questions so far.", Brushes.Teal);
             }
 
             AddMessage($"Here's a summary of your recent actions, {userName}:", Brushes.Orange);
