@@ -1,0 +1,35 @@
+name: .NET Framework Build (Windows)
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: ['**']
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Optional: Install MSBuild tools (usually already present)
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1
+
+      # Restore NuGet packages
+      - name: Restore dependencies
+        run: msbuild ST10449143_PROGPOEPART3/ST10449143_PROGPOEPART3.sln /t:Restore /p:Configuration=Release
+
+      # Build the solution
+      - name: Build solution
+        run: msbuild ST10449143_PROGPOEPART3/ST10449143_PROGPOEPART3.sln /p:Configuration=Release /p:Platform="Any CPU"
+
+      # Optional: Run tests
+      - name: Run tests
+        run: |
+          cd ST10449143_PROGPOEPART3
+          vstest.console bin\Release\*.Test.dll
+        continue-on-error: true
