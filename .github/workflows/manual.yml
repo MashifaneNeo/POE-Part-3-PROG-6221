@@ -1,4 +1,4 @@
-name: .NET Framework 4.8.1 Build (Windows)
+name: .NET Framework Build (Windows)
 
 on:
   push:
@@ -15,31 +15,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Download and install .NET Framework 4.8.1 Developer Pack
-      - name: Install .NET Framework 4.8.1
-        run: |
-          $url = "https://download.visualstudio.microsoft.com/download/pr/2d6bb6b2-226a-4baa-bdec-798822606ff1/8494001c276a4b96804cde7829c04d7f/ndp481-web.exe"
-          $installer = "$env:TEMP\ndp481.exe"
-          Invoke-WebRequest -Uri $url -OutFile $installer
-          Start-Process -FilePath $installer -ArgumentList "/q /norestart" -Wait -NoNewWindow
-          Remove-Item $installer
-
-      # Setup MSBuild
+      # Optional: Install MSBuild tools (usually already present)
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1
 
-      # Restore and Build
-      - name: Restore and Build
-        run: |
-          msbuild ST10449143_PROGPOEPART3/ST10449143_PROGPOEPART3.sln `
-            /t:Restore `
-            /p:Configuration=Release `
-            /p:Platform="Any CPU" `
-            /p:RestorePackagesConfig=true
+      # Restore NuGet packages
+      - name: Restore dependencies
+        run: msbuild ST10449143_PROGPOEPART3/ST10449143_PROGPOEPART3.sln /t:Restore /p:Configuration=Release
 
-          msbuild ST10449143_PROGPOEPART3/ST10449143_PROGPOEPART3.sln `
-            /p:Configuration=Release `
-            /p:Platform="Any CPU"
+      # Build the solution
+      - name: Build solution
+        run: msbuild ST10449143_PROGPOEPART3/ST10449143_PROGPOEPART3.sln /p:Configuration=Release /p:Platform="Any CPU"
 
       # Optional: Run tests
       - name: Run tests
