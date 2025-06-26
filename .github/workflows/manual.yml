@@ -1,4 +1,4 @@
-name: .NET Framework Build (Windows)
+name: .NET Framework 4.8.1 Build (Windows)
 
 on:
   push:
@@ -9,33 +9,41 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest  # Windows runner required for .NET Framework
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Install .NET Framework 4.8.1 Developer Pack
+      # Download and install .NET Framework 4.8.1 Developer Pack
       - name: Install .NET Framework 4.8.1
         run: |
-          choco install dotnetfx --version=4.8.1 -y --no-progress
-          refreshenv
+          $url = "https://download.visualstudio.microsoft.com/download/pr/2d6bb6b2-226a-4baa-bdec-798822606ff1/8494001c276a4b96804cde7829c04d7f/ndp481-web.exe"
+          $installer = "$env:TEMP\ndp481.exe"
+          Invoke-WebRequest -Uri $url -OutFile $installer
+          Start-Process -FilePath $installer -ArgumentList "/q /norestart" -Wait -NoNewWindow
+          Remove-Item $installer
 
-      # Optional: Install MSBuild tools if needed
+      # Setup MSBuild
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1
 
-      # Restore NuGet packages
-      - name: Restore dependencies
-        run: msbuild ST10449143_PROGPOEPART3/ST10449143_PROGPOEPART3.sln /t:Restore /p:Configuration=Release
+      # Restore and Build
+      - name: Restore and Build
+        run: |
+          msbuild ST10449143_PROGPOEPART3/ST10449143_PROGPOEPART3.sln `
+            /t:Restore `
+            /p:Configuration=Release `
+            /p:Platform="Any CPU" `
+            /p:RestorePackagesConfig=true
 
-      # Build the solution
-      - name: Build solution
-        run: msbuild ST10449143_PROGPOEPART3/ST10449143_PROGPOEPART3.sln /p:Configuration=Release /p:Platform="Any CPU"
+          msbuild ST10449143_PROGPOEPART3/ST10449143_PROGPOEPART3.sln `
+            /p:Configuration=Release `
+            /p:Platform="Any CPU"
 
-      # Optional: Run tests if you have them
+      # Optional: Run tests
       - name: Run tests
         run: |
           cd ST10449143_PROGPOEPART3
-          vstest.console bin\Release\*.Test.dll  # Adjust if you have test projects
+          vstest.console bin\Release\*.Test.dll
         continue-on-error: true
