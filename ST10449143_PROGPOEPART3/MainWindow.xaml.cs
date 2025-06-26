@@ -23,19 +23,23 @@ namespace ST10449143_PROGPOEPart3
             }
         }
 
+        private string userName = null;
+        private bool awaitingName = true;
+
         private PreviousWork chatbot;
         private List<CyberTask> tasks = new List<CyberTask>();
         private CyberTask pendingTask = null;
         private CyberSecurityQuiz cyberQuiz;
         private NLPProcessor nlpProcessor;
 
-        private List<string> userActions = new List<string>(); // General summary
-        private Queue<string> activityLog = new Queue<string>(); // Detailed log with timestamps
+        private List<string> userActions = new List<string>();
+        private Queue<string> activityLog = new Queue<string>();
 
         public MainWindow()
         {
             InitializeComponent();
             InitializeApplicationComponents();
+            AskForUserName();
         }
 
         private void InitializeApplicationComponents()
@@ -43,6 +47,11 @@ namespace ST10449143_PROGPOEPart3
             chatbot = new PreviousWork("User", AddMessage);
             cyberQuiz = new CyberSecurityQuiz(AddMessage);
             nlpProcessor = new NLPProcessor();
+        }
+
+        private void AskForUserName()
+        {
+            AddMessage("Before we begin, may I know your name?", Brushes.DarkSlateBlue);
         }
 
         private void SendButton_Click(object sender, RoutedEventArgs e)
@@ -54,10 +63,19 @@ namespace ST10449143_PROGPOEPart3
 
             AddMessage($"> {input}", Brushes.DarkGray);
 
+            if (awaitingName)
+            {
+                userName = input;
+                awaitingName = false;
+                AddMessage($"Nice to meet you, {userName}! I'm your Cybersecurity Assistant. im here to aid you in " +
+                    $"matter related to cybersecurity.", Brushes.MediumSeaGreen);
+                return;
+            }
+
             if (cyberQuiz.IsQuizActive)
             {
                 cyberQuiz.ProcessAnswer(input);
-                LogActivity("Quiz answer processed.");
+                LogActivity($"Quiz answer processed by {userName}.");
                 return;
             }
 
@@ -110,13 +128,13 @@ namespace ST10449143_PROGPOEPart3
 
                 case NLPProcessor.NlpIntent.StartQuiz:
                     cyberQuiz.StartQuiz();
-                    userActions.Add("Quiz started.");
-                    LogActivity("Quiz started.");
+                    userActions.Add($"Quiz started by {userName}.");
+                    LogActivity($"Quiz started by {userName}.");
                     return;
 
                 case NLPProcessor.NlpIntent.ShowHelp:
                     HelpMenu.Show(AddMessage);
-                    LogActivity("Help menu shown.");
+                    LogActivity($"Help menu shown to {userName}.");
                     return;
 
                 case NLPProcessor.NlpIntent.Exit:
@@ -163,31 +181,30 @@ namespace ST10449143_PROGPOEPart3
         {
             if (string.IsNullOrWhiteSpace(title))
             {
-                AddMessage("Please specify what task you'd like to add.", Brushes.Red);
+                AddMessage($"{userName}, please specify what task you'd like to add.", Brushes.Red);
                 return;
             }
 
             var task = new CyberTask
             {
                 Title = title,
-                Description = $" '{title}' has been add" +
-                $" to ensure the intergrity of your cybersecurity",
+                Description = $"'{title}' has been added to strengthen your cybersecurity.",
                 IsCompleted = false
             };
-             
+
             tasks.Add(task);
             pendingTask = task;
 
-            AddMessage($"Task added: \"{task.Description}\". Would you like a reminder? (e.g., 'Remind me in 3 days')", Brushes.Green);
-            userActions.Add($"Task added: '{task.Title}' (no reminder set)");
-            LogActivity($"Task added: '{task.Title}'");
+            AddMessage($"Thanks, {userName}. Task added: \"{task.Description}\". Would you like a reminder? (e.g., 'Remind me in 3 days')", Brushes.Green);
+            userActions.Add($"Task added: '{task.Title}' by {userName}");
+            LogActivity($"Task added by {userName}: '{task.Title}'");
         }
 
         private void HandleDirectReminder(string title)
         {
             if (string.IsNullOrWhiteSpace(title))
             {
-                AddMessage("Please specify what you'd like me to remind you about.", Brushes.Red);
+                AddMessage($"{userName}, please specify what you'd like me to remind you about.", Brushes.Red);
                 return;
             }
 
@@ -216,9 +233,9 @@ namespace ST10449143_PROGPOEPart3
             };
 
             tasks.Add(reminder);
-            AddMessage($"Reminder set for '{title}' on {reminderDate:dd MMM yyyy}.", Brushes.SteelBlue);
+            AddMessage($"{userName}, your reminder for '{title}' has been set for {reminderDate:dd MMM yyyy}.", Brushes.SteelBlue);
             userActions.Add($"Reminder set for '{title}' on {reminderDate:dd MMM yyyy}");
-            LogActivity($"Reminder created: '{title}' for {reminderDate:dd MMM yyyy}");
+            LogActivity($"Reminder created by {userName}: '{title}' for {reminderDate:dd MMM yyyy}");
         }
 
         private void ProcessReminderInput(string input)
@@ -226,13 +243,13 @@ namespace ST10449143_PROGPOEPart3
             if (TryParseReminder(input, out DateTime reminder))
             {
                 pendingTask.ReminderDate = reminder;
-                AddMessage($"Got it! I'll remind you on {reminder:dd MMM yyyy}.", Brushes.Blue);
+                AddMessage($"Got it, {userName}! I'll remind you on {reminder:dd MMM yyyy}.", Brushes.Blue);
                 userActions.Add($"Reminder set for '{pendingTask.Title}' on {reminder:dd MMM yyyy}");
-                LogActivity($"Reminder added for existing task '{pendingTask.Title}' on {reminder:dd MMM yyyy}");
+                LogActivity($"Reminder added by {userName} for existing task '{pendingTask.Title}' on {reminder:dd MMM yyyy}");
             }
             else
             {
-                AddMessage("Sorry, I couldn't understand the reminder format. Try: 'Remind me in 3 days'", Brushes.Red);
+                AddMessage($"{userName}, I couldn't understand the reminder format. Try: 'Remind me in 3 days'", Brushes.Red);
             }
 
             pendingTask = null;
@@ -242,11 +259,11 @@ namespace ST10449143_PROGPOEPart3
         {
             if (tasks.Count == 0)
             {
-                AddMessage("You have no tasks. Try: 'Add task - Check password settings'", Brushes.Gray);
+                AddMessage($"{userName}, you have no tasks. Try: 'Add task - Check password settings'", Brushes.Gray);
             }
             else
             {
-                AddMessage("Here are your tasks:", Brushes.DarkGreen);
+                AddMessage($"Here are your tasks, {userName}:", Brushes.DarkGreen);
                 foreach (var task in tasks)
                 {
                     AddMessage(task.ToString(), task.IsCompleted ? Brushes.Gray : Brushes.DarkBlue);
@@ -260,12 +277,12 @@ namespace ST10449143_PROGPOEPart3
             if (task != null)
             {
                 task.IsCompleted = true;
-                AddMessage($"Task \"{task.Title}\" marked as completed.", Brushes.Green);
-                LogActivity($"Task marked completed: '{task.Title}'");
+                AddMessage($"Great job, {userName}! Task \"{task.Title}\" marked as completed.", Brushes.Green);
+                LogActivity($"Task marked completed by {userName}: '{task.Title}'");
             }
             else
             {
-                AddMessage($"No task found with title \"{title}\".", Brushes.Red);
+                AddMessage($"Sorry {userName}, no task found with title \"{title}\".", Brushes.Red);
             }
         }
 
@@ -275,12 +292,12 @@ namespace ST10449143_PROGPOEPart3
             if (task != null)
             {
                 tasks.Remove(task);
-                AddMessage($"Task \"{task.Title}\" deleted.", Brushes.Red);
-                LogActivity($"Task deleted: '{task.Title}'");
+                AddMessage($"Okay {userName}, task \"{task.Title}\" deleted.", Brushes.Red);
+                LogActivity($"Task deleted by {userName}: '{task.Title}'");
             }
             else
             {
-                AddMessage($"No task found with title \"{title}\".", Brushes.Red);
+                AddMessage($"No task found with title \"{title}\", {userName}.", Brushes.Red);
             }
         }
 
@@ -330,7 +347,7 @@ namespace ST10449143_PROGPOEPart3
 
             if (activityLog.Count > 50)
             {
-                activityLog.Dequeue(); // keep log concise
+                activityLog.Dequeue();
             }
         }
 
@@ -338,11 +355,11 @@ namespace ST10449143_PROGPOEPart3
         {
             if (activityLog.Count == 0)
             {
-                AddMessage("Your activity log is currently empty.", Brushes.Gray);
+                AddMessage($"{userName}, your activity log is currently empty.", Brushes.Gray);
                 return;
             }
 
-            AddMessage("Here's a summary of your recent actions:", Brushes.Orange);
+            AddMessage($"Here's a summary of your recent actions, {userName}:", Brushes.Orange);
             int count = 1;
             foreach (string entry in activityLog)
             {
@@ -355,11 +372,11 @@ namespace ST10449143_PROGPOEPart3
         {
             if (userActions.Count == 0)
             {
-                AddMessage("I haven't done anything for you yet. Try adding a task or setting a reminder.", Brushes.Gray);
+                AddMessage($"{userName}, I haven't done anything for you yet. Try adding a task or setting a reminder.", Brushes.Gray);
             }
             else
             {
-                AddMessage("Here's a summary of your requests:", Brushes.DarkOrange);
+                AddMessage($"Here's what I've done for you, {userName}:", Brushes.DarkOrange);
                 int count = 1;
                 foreach (var action in userActions)
                 {

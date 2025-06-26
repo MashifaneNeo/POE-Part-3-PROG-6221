@@ -10,7 +10,10 @@ namespace ST10449143_PROGPOEPART3
         public int CurrentQuestionIndex { get; private set; }
         public int Score { get; private set; }
         public bool IsQuizActive { get; private set; }
+        public bool IsQuizPaused { get; private set; } = false;
         public Action<string, Brush> AddMessage { get; set; }
+
+        public int QuestionsAnswered => CurrentQuestionIndex;
 
         public CyberSecurityQuiz(Action<string, Brush> addMessageCallback)
         {
