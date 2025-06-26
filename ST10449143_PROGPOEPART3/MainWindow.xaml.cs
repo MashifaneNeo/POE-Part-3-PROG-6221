@@ -25,6 +25,7 @@ namespace ST10449143_PROGPOEPart3
 
         private string userName = null;
         private bool awaitingName = true;
+        private bool isShowingFullActivity = false;
 
         private PreviousWork chatbot;
         private List<CyberTask> tasks = new List<CyberTask>();
@@ -107,18 +108,30 @@ namespace ST10449143_PROGPOEPart3
                 return;
             }
 
-            if (input.ToLower().Contains("what have you done for me"))
+            // Show user action history
+            if (input.Equals("what have you done for me", StringComparison.OrdinalIgnoreCase))
             {
                 ShowUserActions();
                 return;
             }
 
-            if (input.ToLower().Contains("show activity log"))
+            // Show activity log preview
+            if (input.Equals("show activity log", StringComparison.OrdinalIgnoreCase))
             {
+                isShowingFullActivity = false;
                 ShowActivityLog();
                 return;
             }
 
+            // Show full log if "show more"
+            if (input.Equals("show more", StringComparison.OrdinalIgnoreCase) && activityLog.Count > 7)
+            {
+                isShowingFullActivity = true;
+                ShowActivityLog();
+                return;
+            }
+
+            // NLP-based commands
             var nlpResult = nlpProcessor.AnalyzeInput(input);
 
             switch (nlpResult.Intent)
@@ -159,8 +172,10 @@ namespace ST10449143_PROGPOEPart3
                     return;
             }
 
+            // If no match, pass to chatbot
             chatbot.ProcessInput(input);
         }
+
 
         private bool TryProcessExplicitTaskCommand(string input)
         {
@@ -376,18 +391,25 @@ namespace ST10449143_PROGPOEPart3
                 return;
             }
 
-            // Show quiz progress if in progress and not completed
+            // Show quiz progress if relevant
             if (cyberQuiz.QuestionsAnswered > 0 && cyberQuiz.QuestionsAnswered < cyberQuiz.Questions.Count)
             {
                 AddMessage($"{userName}, you have answered {cyberQuiz.QuestionsAnswered} out of {cyberQuiz.Questions.Count} quiz questions so far.", Brushes.Teal);
             }
 
-            AddMessage($"Here's a summary of your recent actions, {userName}:", Brushes.Orange);
-            int count = 1;
-            foreach (string entry in activityLog)
+            AddMessage($"Here are your {(isShowingFullActivity ? "complete" : "recent")} activities, {userName}:", Brushes.Orange);
+
+            var logArray = activityLog.ToArray();
+            int countToShow = isShowingFullActivity ? logArray.Length : Math.Min(7, logArray.Length);
+
+            for (int i = 0; i < countToShow; i++)
             {
-                if (count > 5) break;
-                AddMessage($"{count++}. {entry}", Brushes.SlateBlue);
+                AddMessage($"{i + 1}. {logArray[i]}", Brushes.SlateBlue);
+            }
+
+            if (!isShowingFullActivity && activityLog.Count > 7)
+            {
+                AddMessage("Type 'show more' to see the full activity history.", Brushes.DarkBlue);
             }
         }
 
@@ -399,11 +421,11 @@ namespace ST10449143_PROGPOEPart3
             }
             else
             {
-                AddMessage($"Here's what I've done for you, {userName}:", Brushes.DarkOrange);
+                AddMessage($"Here's what I've done for you recently, {userName}:", Brushes.DarkOrange);
                 int count = 1;
-                foreach (var action in userActions)
+                for (int i = userActions.Count - 1; i >= 0 && count <= 5; i--, count++)
                 {
-                    AddMessage($"{count++}. {action}", Brushes.MediumVioletRed);
+                    AddMessage($"{count}. {userActions[i]}", Brushes.MediumVioletRed);
                 }
             }
         }
