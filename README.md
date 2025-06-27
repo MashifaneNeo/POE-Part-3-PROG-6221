@@ -71,4 +71,4 @@ Features
 ---
 
 Github link: https://github.com/MashifaneNeo/POE-Part-3-PROG-6221.git
-YouTube video link: 
+YouTube video link: https://youtu.be/vvuSIzFxzRE
