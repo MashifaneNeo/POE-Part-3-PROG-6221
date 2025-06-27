@@ -1,181 +1,74 @@
-Cybersecurity Awareness Assistant – GUI User Guide
+ Cybersecurity Assistant GUI
 
-Overview
+ Overview
 
-The Cybersecurity Awareness Assistant is a C# WPF application that provides cybersecurity education and task management through a natural language chatbot interface. It allows users to:
+The Cybersecurity Assistant is a WPF-based desktop application designed to help users improve their cybersecurity awareness. It offers interactive features including:
 
-* Add and manage cybersecurity tasks
-* Set and view reminders
-* Start and complete cybersecurity quizzes
-* Track past actions and view a detailed activity log
-* Interact with the chatbot using natural language commands
+* A Task Assistant for managing cybersecurity-related tasks.
+* A Cybersecurity Quiz to test users' knowledge.
+* An Activity Log to track user actions and quiz progress.
+* An integrated Chatbot that uses keyword detection, sentiment analysis, and memory to provide helpful cybersecurity tips and guidance.
+
+---
+Features
+
+* User Authentication: Prompts users for their name on startup.
+* Tabbed Interface: Easy navigation between Task Assistant, Quiz, Activity Log, and Chatbot.
+* Cybersecurity Quiz:
+
+  * Start, pause, resume, and submit answers.
+  * Displays feedback and tracks scores.
+  * Logs quiz activity.
+*  Activity Log:
+
+  * Logs application start, quiz events, and user actions.
+  * Displays recent activities with a toggle for full view.
+*  Chatbot:
+
+  * Natural language processing with keyword detection.
+  * Sentiment detection to personalize responses.
+  * Memory of user preferences (favorite topics).
+  * Provides randomized helpful tips on cybersecurity topics.
+*  NLP Processor Launch: Button to open NLP processing window (optional feature).
+*  Status Bar: Displays current user information.
+
+---
+ Usage
+
+1. When the application starts, enter your name in the welcome dialog.
+2. Navigate between tabs to access different features:
+
+   * Task Assistant: Manage cybersecurity tasks.
+   *  Cybersecurity Quiz: Take quizzes and monitor your progress.
+   *  Activity Log: View logged actions and quiz events.
+   *  Chatbot: Interact with the assistant using natural language.
+3. Use the Open NLP Processor button to launch the NLP window.
+4. Use the Exit button to safely close the application.
 
 ---
 
- Getting Started
+  Project Structure
 
-Running the Application
-
-1. Open the solution in Visual Studio.
-2. Build and run the project.
-3. The main window will launch, displaying the chat interface.
-
----
-Task Management
-
-Add a Task
-
-Use one of the following commands to add a new cybersecurity-related task:
-
-* `Add task Check my privacy settings`
-* `Create task Enable two-factor authentication`
-
-The assistant will respond with a message confirming the task and ask if you want to set a reminder.
-
-
-Tasks will appear in the main window with an indicator of whether each task is complete and whether a reminder is set.
-
-Complete a Task
-
-Mark a task as completed using:
-
-* `Complete task Check my privacy settings`
-* `Mark task Enable two-factor authentication as done`
-
-The assistant will confirm the task is completed.
-
- Delete a Task
-
-To remove a task:
-
-* `Delete task Check my privacy settings`
-* `Remove task Enable two-factor authentication`
+* MainWindow\.xaml & MainWindow\.xaml.cs: Main UI and application logic controller.
+* TaskAssistantControl.xaml & .cs: Task assistant user control.
+* CyberSecurityQuizControl.xaml & .cs: Quiz interface and logic.
+* ActivityLogControl.xaml & .cs: Displays logged activities.
+* ChatbotControl.xaml & .cs: Chatbot UI embedded in the tab.
+* ChatbotWindow\.xaml & .cs: Optional standalone chatbot window (if used).
+* PreviousWork.cs: Chatbot logic including keyword detection, sentiment analysis, tip management, and memory.
+* DictionaryList.cs: Data for chatbot topics and keywords.
+* HelpMenu.cs: Help info displayed by chatbot.
+* SentimentDetector.cs: Simple sentiment recognition logic.
 
 ---
 
- Setting Reminders
+ Dependencies
 
- After Adding a Task
-
-After adding a task, the bot will prompt:
-
-> Task added: "Review: Check my privacy settings". Would you like a reminder? (e.g., 'Remind me in 3 days')
-
-Reply with:
-
-* `Remind me in 3 days`
-
-This will set a reminder for that task.
-
- Direct Reminder
-
-You can also directly create a reminder without adding a task first:
-
-* `Remind me to update my password tomorrow`
-* `Set a reminder to review my firewall in 2 days`
-
-The assistant will extract the title and schedule the reminder accordingly.
+* .NET Framework 4.7.2 or later
+* WPF (Windows Presentation Foundation)
+* No external libraries required.
 
 ---
 
- Quiz Feature
-
- Starting the Quiz
-
-Begin a cybersecurity quiz by typing:
-
-* `Start quiz`
-* `Quiz time`
-* `Begin quiz`
-
-The quiz will start immediately. Answer each question as prompted.
-
- Quiz Activity
-
-The assistant logs the start and end of quizzes in the activity log.
-
----
-
- Viewing Past Actions
-
- What Have You Done for Me?
-
-To view a summary of recent user-initiated actions:
-
-* `What have you done for me`
-* `Show my actions`
-
-This includes task additions, reminders set, quiz started, etc., in short phrases.
-
-Show Activity Log
-
-To view a detailed log:
-
-* `Show activity log`
-
-This will display the last five significant actions, including the exact time they were recorded.
-
-Examples of logged actions:
-
-* ` - Task added: 'Check software updates'`
-* `- Reminder created: 'Enable encryption' for 25 Jun 2025`
-
----
-
-Help and Exit
-
- Getting Help
-
-To see the help menu:
-
-* `Show help`
-* `What can I ask`
-* `Help`
-
-Exiting the Application
-
-To close the application:
-
-* `Exit`
-* `Quit`
-* `Close bot`
-
----
-
- Notes
-
-* The assistant uses simple NLP logic to detect intent from your input.
-* You must phrase task and reminder inputs clearly to ensure proper understanding.
-* Task titles must be unique for accurate tracking and deletion.
-* The activity log stores the last 50 actions; the display is limited to 5 entries by default for readability.
-
----
-
-Summary of Supported Commands
-
-| Intent        | Example Input                             |
-| ------------- | ----------------------------------------- |
-| Add Task      | `Add task Check password strength`        |
-| View Tasks    | `View tasks`                              |
-| Complete Task | `Complete task Check password strength`   |
-| Delete Task   | `Delete task Check password strength`     |
-| Set Reminder  | `Remind me to update antivirus in 3 days` |
-| Start Quiz    | `Start quiz`                              |
-| Help Menu     | `Show help`                               |
-| Exit          | `Exit`                                    |
-| Show Actions  | `What have you done for me`               |
-| Activity Log  | `Show activity log`                       |
-
----
-
-Developer Information
-
-* Built in C# using WPF
-* NLP handled through keyword-based matching in `NLPProcessor`
-* Tasks stored in memory (`List<CyberTask>`)
-* Activity log stored in a fixed-size queue (`Queue<string>`)
-* GUI dynamically updates using `TextBlock` controls
-
----
 Github link: https://github.com/MashifaneNeo/POE-Part-3-PROG-6221.git
 YouTube video link: 
