@@ -17,22 +17,10 @@ The Cybersecurity Awareness Assistant is a C# WPF application that provides cybe
 Running the Application
 
 1. Open the solution in Visual Studio.
-2. Build and run the project (F5).
+2. Build and run the project.
 3. The main window will launch, displaying the chat interface.
 
 ---
-
-How to Use the Chatbot
-
-Sending Input
-
-* Type a message into the text input box at the bottom.
-* Click the Send button or press Enter.
-
-The chatbot will process your input and respond accordingly based on your intent.
-
----
-
 Task Management
 
 Add a Task
@@ -44,17 +32,10 @@ Use one of the following commands to add a new cybersecurity-related task:
 
 The assistant will respond with a message confirming the task and ask if you want to set a reminder.
 
- View All Tasks
-
-To see your current task list, type:
-
-* `View tasks`
-* `Show tasks`
-* `List tasks`
 
 Tasks will appear in the main window with an indicator of whether each task is complete and whether a reminder is set.
 
- Complete a Task
+Complete a Task
 
 Mark a task as completed using:
 
