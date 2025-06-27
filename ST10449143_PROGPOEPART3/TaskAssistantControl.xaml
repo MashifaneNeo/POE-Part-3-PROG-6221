@@ -46,9 +46,20 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="Task" Width="300" DisplayMemberBinding="{Binding Title}"/>
-                    <GridViewColumn Header="Description" Width="250" DisplayMemberBinding="{Binding Description}"/>
+
+                    <GridViewColumn Header="Task" Width="250" DisplayMemberBinding="{Binding Title}"/>
+
+                    <!-- Wrapped Description Column -->
+                    <GridViewColumn Header="Description" Width="250">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" MaxWidth="230"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
                     <GridViewColumn Header="Reminder" Width="150" DisplayMemberBinding="{Binding ReminderDate, StringFormat=dd-MMM-yyyy}"/>
+
                     <GridViewColumn Header="Actions" Width="100">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>

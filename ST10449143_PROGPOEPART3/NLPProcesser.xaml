@@ -101,9 +101,7 @@
                     <TextBlock Text="- Complete/finish/mark task [description]" Margin="20,2"/>
                     <TextBlock Text="- Delete/remove/cancel task [description]" Margin="20,2"/>
 
-                    <TextBlock Text="Other Commands:" FontWeight="Bold" Margin="0,10,0,5"/>
-                    <TextBlock Text="- Start/begin quiz" Margin="20,2"/>
-                    <TextBlock Text="- Help/show help" Margin="20,2"/>
+                    <TextBlock Text="Other Commands:" FontWeight="Bold" Margin="0,10,0,5"/>                    
                     <TextBlock Text="- Exit/quit/close" Margin="20,2"/>
                 </StackPanel>
             </ScrollViewer>

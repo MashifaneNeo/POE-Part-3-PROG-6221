@@ -52,6 +52,7 @@ namespace ST10449143_PROGPOEPART3
 
             // Log activity
             ((MainWindow)Application.Current.MainWindow)?.LogActivity($"Task added: {task.Title} (Reminder: {task.ReminderDate?.ToShortDateString() ?? "None"})");
+            
         }
 
 
@@ -121,22 +122,22 @@ namespace ST10449143_PROGPOEPART3
                 return $"Task added with the description \"{newTask.Description}\". Would you like a reminder?";
             }
 
-            if (input.StartsWith("yes, remind me in"))
+            if (input.StartsWith("yes, remind me on"))
             {
-                var parts = input.Replace("yes, remind me in", "").Trim().Split(' ');
-                if (parts.Length >= 2 && int.TryParse(parts[0], out int numberOfDays))
+                var datePart = input.Replace("yes, remind me on", "").Trim();
+                if (DateTime.TryParse(datePart, out DateTime reminderDate))
                 {
                     var lastTask = tasks.LastOrDefault();
                     if (lastTask != null)
                     {
-                        lastTask.ReminderDate = DateTime.Now.AddDays(numberOfDays);
+                        lastTask.ReminderDate = reminderDate;
                         UpdateTaskSummary();
-                        return $"Got it! I’ll remind you in {numberOfDays} day(s), on {lastTask.ReminderDate:dd MMM yyyy}.";
+                        return $"Reminder set for \"{lastTask.Title}\" on {reminderDate:dd MMM yyyy}.";
                     }
                 }
-
-                return "Sorry, I couldn't understand the number of days for the reminder.";
+                return "Sorry, I couldn't understand the reminder date. Please use a valid date format like 'yes, remind me on 2025-06-28'.";
             }
+
 
             if (input.StartsWith("show tasks"))
             {

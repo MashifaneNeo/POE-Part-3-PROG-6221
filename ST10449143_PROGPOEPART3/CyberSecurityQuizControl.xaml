@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -13,7 +14,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Quiz Controls -->
+        <!-- Quiz Control Buttons and Status -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
             <Button x:Name="StartQuizButton" Content="Start Quiz" Padding="10,5" Margin="0,0,5,0" Click="StartQuizButton_Click"/>
             <Button x:Name="PauseQuizButton" Content="Pause Quiz" Padding="10,5" Margin="0,0,5,0" Click="PauseQuizButton_Click" IsEnabled="False"/>
@@ -21,13 +22,13 @@
             <TextBlock x:Name="QuizStatusText" VerticalAlignment="Center" FontWeight="Bold" Margin="10,0"/>
         </StackPanel>
 
-        <!-- Quiz Content -->
+        <!-- Question and Options -->
         <Border Grid.Row="1" BorderBrush="LightGray" BorderThickness="1" Margin="10" Padding="10">
-            <ScrollViewer>
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel>
                     <TextBlock x:Name="QuestionText" TextWrapping="Wrap" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
                     <ListBox x:Name="OptionsList" SelectionMode="Single" Margin="5" 
-         BorderThickness="1" BorderBrush="Gray" FontSize="14">
+                             BorderThickness="1" BorderBrush="Gray" FontSize="14">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding}" Padding="5"/>
@@ -38,11 +39,11 @@
             </ScrollViewer>
         </Border>
 
-        <!-- Quiz Submission -->
+        <!-- Submit Button -->
         <Button Grid.Row="2" x:Name="SubmitButton" Content="Submit Answer" HorizontalAlignment="Right" 
                 Margin="10" Padding="10,5" Click="SubmitButton_Click" IsEnabled="False"/>
 
-        <!-- Quiz Progress -->
+        <!-- Progress Bar and Progress Text -->
         <Grid Grid.Row="3" Margin="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>

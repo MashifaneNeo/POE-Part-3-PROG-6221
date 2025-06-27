@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -7,6 +9,7 @@ namespace ST10449143_PROGPOEPART3
     public partial class CyberSecurityQuizControl : UserControl
     {
         public CyberSecurityQuiz quiz;
+        private bool feedbackShown = false;
 
         public CyberSecurityQuizControl()
         {
@@ -18,7 +21,6 @@ namespace ST10449143_PROGPOEPART3
         {
             Dispatcher.Invoke(() =>
             {
-                // Show status and feedback messages here
                 QuizStatusText.Text = message;
                 QuizStatusText.Foreground = color;
             });
@@ -33,6 +35,8 @@ namespace ST10449143_PROGPOEPART3
             SubmitButton.IsEnabled = true;
             ResumeQuizButton.IsEnabled = false;
             UpdateQuizProgress();
+
+            ((MainWindow)Application.Current.MainWindow)?.LogActivity("Quiz started.");
         }
 
         private void PauseQuizButton_Click(object sender, RoutedEventArgs e)
@@ -43,6 +47,9 @@ namespace ST10449143_PROGPOEPART3
             SubmitButton.IsEnabled = false;
             QuizStatusText.Text = "Quiz paused.";
             QuizStatusText.Foreground = Brushes.Orange;
+
+            ((MainWindow)Application.Current.MainWindow)?.LogActivity(
+                $"Quiz paused. Questions answered: {quiz.QuestionsAnswered}");
         }
 
         private void ResumeQuizButton_Click(object sender, RoutedEventArgs e)
@@ -54,15 +61,38 @@ namespace ST10449143_PROGPOEPART3
             LoadCurrentQuestion();
             QuizStatusText.Text = "Quiz resumed.";
             QuizStatusText.Foreground = Brushes.Green;
+
+            ((MainWindow)Application.Current.MainWindow)?.LogActivity("Quiz resumed.");
         }
 
         private void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
             if (OptionsList.SelectedIndex >= 0)
             {
-                quiz.ProcessAnswer((OptionsList.SelectedIndex + 1).ToString());
-                LoadCurrentQuestion();
+                int selected = OptionsList.SelectedIndex;
+                bool isCorrect = (selected == quiz.Questions[quiz.CurrentQuestionIndex].CorrectAnswerIndex);
+                string explanation = quiz.Questions[quiz.CurrentQuestionIndex].Explanation;
+
+                if (isCorrect)
+                {
+                    QuizStatusText.Text = $"✅ Correct! {explanation}";
+                    QuizStatusText.Foreground = Brushes.Green;
+                    quiz.Score++;
+                }
+                else
+                {
+                    QuizStatusText.Text = $"❌ Incorrect. {explanation}";
+                    QuizStatusText.Foreground = Brushes.Red;
+                }
+
+                quiz.CurrentQuestionIndex++;
                 UpdateQuizProgress();
+
+                Dispatcher.InvokeAsync(async () =>
+                {
+                    await Task.Delay(1000);
+                    LoadCurrentQuestion();
+                });
             }
             else
             {
@@ -79,6 +109,7 @@ namespace ST10449143_PROGPOEPART3
                 QuestionText.Text = $"Question {quiz.CurrentQuestionIndex + 1}: {question.QuestionText}";
                 OptionsList.ItemsSource = question.Options;
                 OptionsList.SelectedIndex = -1;
+                QuizStatusText.Text = "";
             }
             else
             {
@@ -87,6 +118,11 @@ namespace ST10449143_PROGPOEPART3
                 SubmitButton.IsEnabled = false;
                 PauseQuizButton.IsEnabled = false;
                 ResumeQuizButton.IsEnabled = false;
+                QuizStatusText.Text = $"Quiz finished! Score: {quiz.Score}/{quiz.Questions.Count}";
+                QuizStatusText.Foreground = Brushes.Purple;
+
+                ((MainWindow)Application.Current.MainWindow)?.LogActivity(
+                    $"Quiz completed. Final score: {quiz.Score}/{quiz.Questions.Count}");
             }
         }
 

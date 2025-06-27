@@ -7,11 +7,12 @@ namespace ST10449143_PROGPOEPART3
     public class CyberSecurityQuiz
     {
         public List<QuizQuestion> Questions { get; private set; }
-        public int CurrentQuestionIndex { get; private set; }
-        public int Score { get; private set; }
+        public int CurrentQuestionIndex { get; set; }
+        public int Score { get; set; }
         public bool IsQuizActive { get; private set; }
         public bool IsQuizPaused { get; private set; } = false;
         public Action<string, Brush> AddMessage { get; set; }
+        public Action UpdateStatusBarAction { get; set; }
 
         public int QuestionsAnswered => CurrentQuestionIndex;
 
@@ -205,38 +206,7 @@ namespace ST10449143_PROGPOEPART3
             }
         }
 
-        public void ProcessAnswer(string input)
-        {
-            if (!IsQuizActive)
-            {
-                AddMessage("Quiz is paused. Type 'continue quiz' to resume.", Brushes.Gray);
-                return;
-            }
-
-            if (int.TryParse(input, out int answer) &&
-                answer >= 1 &&
-                answer <= Questions[CurrentQuestionIndex].Options.Count)
-            {
-                bool isCorrect = (answer - 1) == Questions[CurrentQuestionIndex].CorrectAnswerIndex;
-
-                if (isCorrect)
-                {
-                    Score++;
-                    AddMessage("✅ Correct! " + Questions[CurrentQuestionIndex].Explanation, Brushes.Green);
-                }
-                else
-                {
-                    AddMessage("❌ Incorrect. " + Questions[CurrentQuestionIndex].Explanation, Brushes.Red);
-                }
-
-                CurrentQuestionIndex++;
-                DisplayCurrentQuestion();
-            }
-            else
-            {
-                AddMessage("Please enter a valid option number.", Brushes.Red);
-            }
-        }
+        
 
         public void StartQuizFromNLP()
         {
@@ -256,6 +226,8 @@ namespace ST10449143_PROGPOEPART3
                 AddMessage("Good job! Keep learning about cybersecurity.", Brushes.Blue);
             else
                 AddMessage("Consider reviewing cybersecurity basics for better protection.", Brushes.Orange);
+
+            UpdateStatusBarAction?.Invoke();
         }
     }
 

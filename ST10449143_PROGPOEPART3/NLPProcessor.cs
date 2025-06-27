@@ -29,51 +29,73 @@ namespace ST10449143_PROGPOEPART3
 
             input = input.ToLower().Trim();
 
-            if (input.StartsWith("add task") || input.StartsWith("create task") || input.StartsWith("set task"))
+            // Add Task variations
+            if (input.Contains("add task") || input.Contains("create task") || input.Contains("set task") ||
+                input.Contains("add a task") || input.Contains("add task to") || input.Contains("add task:"))
             {
-                string title = input.Substring(input.IndexOf("task") + 4).Trim(new[] { '-', ' ', ':' });
+                // Extract task title after keyword "task"
+                int idx = input.IndexOf("task");
+                string title = idx >= 0 && idx + 4 < input.Length ? input.Substring(idx + 4).Trim(new[] { '-', ':', ' ' }) : "";
                 return new NlpResult { Intent = NlpIntent.AddTask, Title = title };
             }
 
-            if (input.StartsWith("remind me to") || input.StartsWith("set reminder to") || input.StartsWith("reminder to"))
+            // Set Reminder variations
+            if (input.Contains("remind me to") || input.Contains("set a reminder to") || input.Contains("reminder to") ||
+                input.Contains("remind me about"))
             {
-                string title = input.Substring(input.IndexOf("to") + 2).Trim();
+                int idx = input.IndexOf("to");
+                string title = idx >= 0 && idx + 2 < input.Length ? input.Substring(idx + 2).Trim() : "";
                 return new NlpResult { Intent = NlpIntent.SetReminder, Title = title };
             }
 
-            if (input.StartsWith("view tasks") || input.StartsWith("show tasks") || input.StartsWith("list tasks"))
+            // View Tasks
+            if (input.Contains("view tasks") || input.Contains("show tasks") || input.Contains("list tasks"))
             {
                 return new NlpResult { Intent = NlpIntent.ViewTasks };
             }
 
-            if (input.StartsWith("complete task") || input.StartsWith("finish task") || input.StartsWith("mark task"))
+            // Complete Task
+            if (input.Contains("complete task") || input.Contains("finish task") || input.Contains("mark task"))
             {
-                string title = input.Substring(input.IndexOf("task") + 4).Trim();
+                int idx = input.IndexOf("task");
+                string title = idx >= 0 && idx + 4 < input.Length ? input.Substring(idx + 4).Trim() : "";
                 return new NlpResult { Intent = NlpIntent.CompleteTask, Title = title };
             }
 
-            if (input.StartsWith("delete task") || input.StartsWith("remove task") || input.StartsWith("cancel task"))
+            // Delete Task
+            if (input.Contains("delete task") || input.Contains("remove task") || input.Contains("cancel task"))
             {
-                string title = input.Substring(input.IndexOf("task") + 4).Trim();
+                int idx = input.IndexOf("task");
+                string title = idx >= 0 && idx + 4 < input.Length ? input.Substring(idx + 4).Trim() : "";
                 return new NlpResult { Intent = NlpIntent.DeleteTask, Title = title };
             }
 
-            if (input.Contains("start quiz") || input.Contains("begin quiz"))
+            // Start Quiz
+            if (input.Contains("start quiz") || input.Contains("begin quiz") || input.Contains("take quiz"))
             {
                 return new NlpResult { Intent = NlpIntent.StartQuiz };
             }
 
+            // Help
             if (input == "help" || input == "show help")
             {
                 return new NlpResult { Intent = NlpIntent.ShowHelp };
             }
 
+            // Exit commands
             if (input == "exit" || input == "quit" || input == "close")
             {
                 return new NlpResult { Intent = NlpIntent.Exit };
+            }
+
+            // Special case for summary requests
+            if (input.Contains("what have you done") || input.Contains("show me what you did") || input.Contains("summary"))
+            {
+                return new NlpResult { Intent = NlpIntent.None, Title = input };
             }
 
             return new NlpResult { Intent = NlpIntent.None };
         }
     }
 }
+

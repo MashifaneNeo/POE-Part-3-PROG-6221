@@ -4,9 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ST10449143_PROGPOEPART3"
-        xmlns:System="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="Cybersecurity Assistant" Height="700" Width="1100" WindowStartupLocation="CenterScreen"
+        Title="Cybersecurity Assistant" Height="700" Width="1100"
+        WindowStartupLocation="CenterScreen"
         Closing="Window_Closing">
 
     <DockPanel>
@@ -24,15 +24,15 @@
                                FontSize="24" FontWeight="Bold" VerticalAlignment="Center"/>
                 </StackPanel>
 
-                <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button x:Name="SettingsButton" Content="Settings" Margin="5,0"/>
-                    <Button x:Name="ExitButton" Content="Exit" Margin="5,0" Click="ExitButton_Click"/>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">                   
+                    <Button x:Name="ExitButton" Content="Exit" Margin="10,0" Padding="15,8" 
+        FontSize="16" FontWeight="Bold" Click="ExitButton_Click" />
                 </StackPanel>
             </Grid>
         </Border>
 
         <!-- Main Tabs -->
-        <TabControl x:Name="MainTabControl" SelectionChanged="MainTabControl_SelectionChanged">
+        <TabControl x:Name="MainTabControl" SelectionChanged="MainTabControl_SelectionChanged" Width="738">
             <TabItem x:Name="TaskAssistantTab">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
@@ -49,14 +49,6 @@
                 </TabItem.Header>
             </TabItem>
 
-            <TabItem x:Name="NlpTab">
-                <TabItem.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="NLP Processor"/>
-                    </StackPanel>
-                </TabItem.Header>
-            </TabItem>
-
             <TabItem x:Name="ActivityLogTab">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
@@ -67,16 +59,25 @@
         </TabControl>
 
         <!-- NLP Launch Button -->
-        <Button Content="Open NLP Processor" Click="OpenNLPProcessor_Click" Margin="10" />
+        <Button Content="Open NLP Processor"
+                Click="OpenNLPProcessor_Click"
+                Margin="10"
+                Padding="20,10"
+                FontSize="16"
+                HorizontalAlignment="Center"
+                Width="250"
+                Height="50"
+                Background="#FF0F3460"
+                Foreground="White"
+                FontWeight="Bold"
+                BorderBrush="DarkGray"
+                BorderThickness="2"
+                Cursor="Hand" />
 
         <!-- Status Bar -->
         <StatusBar DockPanel.Dock="Bottom" Background="#FFE0E0E0">
             <StatusBarItem>
                 <TextBlock x:Name="StatusText" FontWeight="Bold"/>
-            </StatusBarItem>
-            <Separator/>
-            <StatusBarItem>
-                <TextBlock x:Name="TimeText"/>
             </StatusBarItem>
         </StatusBar>
     </DockPanel>

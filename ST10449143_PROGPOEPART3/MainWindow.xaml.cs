@@ -24,8 +24,7 @@ namespace ST10449143_PROGPOEPART3
             InitializeComponent();
             ShowWelcomeDialog();              // Launch welcome dialog first
             InitializeApplicationComponents();
-            AddActivityLogEntry($"User '{CurrentUserName}' started the application");
-            StartClock();
+            AddActivityLogEntry($"User '{CurrentUserName}' started the application");            
         }
 
         private void ShowWelcomeDialog()
@@ -94,9 +93,11 @@ namespace ST10449143_PROGPOEPART3
         {
             Dispatcher.Invoke(() =>
             {
-                StatusText.Text = $"User: {CurrentUserName} | Tasks: {taskAssistantControl?.TasksCount() ?? 0} | Quiz Score: {cyberQuiz?.Score ?? 0}/{cyberQuiz?.Questions.Count ?? 0}";
+                // Show only user name in status bar
+                StatusText.Text = $"User: {CurrentUserName}";
             });
         }
+
 
         private void MainTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -113,16 +114,6 @@ namespace ST10449143_PROGPOEPART3
             nlpWindow.Show();
         }
 
-        private void StartClock()
-        {
-            clockTimer = new DispatcherTimer();
-            clockTimer.Interval = TimeSpan.FromSeconds(1);
-            clockTimer.Tick += (s, e) =>
-            {
-                TimeText.Text = $"Last update: {DateTime.Now:yyyy-MM-dd HH:mm:ss}";
-            };
-            clockTimer.Start();
-        }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
