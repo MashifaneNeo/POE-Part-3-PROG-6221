@@ -26,10 +26,11 @@
             <ScrollViewer>
                 <StackPanel>
                     <TextBlock x:Name="QuestionText" TextWrapping="Wrap" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
-                    <ListBox x:Name="OptionsList" SelectionMode="Single" Margin="5">
+                    <ListBox x:Name="OptionsList" SelectionMode="Single" Margin="5" 
+         BorderThickness="1" BorderBrush="Gray" FontSize="14">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <RadioButton Content="{Binding}" GroupName="QuizOptions"/>
+                                <TextBlock Text="{Binding}" Padding="5"/>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>

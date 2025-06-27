@@ -56,37 +56,57 @@ namespace ST10449143_PROGPOEPART3
 
         private string GetResponseForIntent(NLPProcessor.NlpResult result)
         {
+            var mainWindow = (MainWindow)Application.Current.MainWindow;
             switch (result.Intent)
             {
                 case NLPProcessor.NlpIntent.AddTask:
-                    return $"I'll add the task: '{result.Title}' to your list.";
+                    mainWindow?.taskAssistantControl?.HandleChatCommand($"add task - {result.Title}");
+                    mainWindow?.LogActivity($"Task added via NLP: {result.Title}");
+                    return $"Task '{result.Title}' added via NLP.";
 
                 case NLPProcessor.NlpIntent.SetReminder:
-                    return $"Reminder set for: '{result.Title}'.";
-
-                case NLPProcessor.NlpIntent.ViewTasks:
-                    return "Here are your current tasks...";
-
-                case NLPProcessor.NlpIntent.CompleteTask:
-                    return $"Marking task '{result.Title}' as completed.";
-
-                case NLPProcessor.NlpIntent.DeleteTask:
-                    return $"Deleting task: '{result.Title}'.";
+                    mainWindow?.taskAssistantControl?.HandleChatCommand($"add task - {result.Title}");
+                    mainWindow?.taskAssistantControl?.HandleChatCommand("yes, remind me in 3"); // Default 3 days
+                    mainWindow?.LogActivity($"Reminder set via NLP for: {result.Title}");
+                    return $"Reminder for '{result.Title}' set via NLP.";
 
                 case NLPProcessor.NlpIntent.StartQuiz:
-                    return "Starting the Cyber Security Quiz...";
+                    mainWindow?.quizControl?.quiz?.StartQuiz();
+                    mainWindow?.LogActivity("Quiz started via NLP.");
+                    return "Started quiz via NLP.";
+
+                case NLPProcessor.NlpIntent.ViewTasks:
+                    return mainWindow?.taskAssistantControl?.HandleChatCommand("show tasks") ?? "No tasks found.";
+
+                case NLPProcessor.NlpIntent.CompleteTask:
+                    mainWindow?.taskAssistantControl?.HandleChatCommand($"complete task {result.Title}");
+                    mainWindow?.LogActivity($"Task completed via NLP: {result.Title}");
+                    return $"Marked task '{result.Title}' as completed via NLP.";
+
+                case NLPProcessor.NlpIntent.DeleteTask:
+                    mainWindow?.taskAssistantControl?.HandleChatCommand($"delete task {result.Title}");
+                    mainWindow?.LogActivity($"Task deleted via NLP: {result.Title}");
+                    return $"Task '{result.Title}' deleted via NLP.";
 
                 case NLPProcessor.NlpIntent.ShowHelp:
-                    return "I understand commands about tasks, reminders, and quizzes. Expand the 'Available Commands' section below to see examples.";
+                    return "Try commands like: 'add task', 'remind me', 'start quiz', 'show tasks', 'exit'.";
 
                 case NLPProcessor.NlpIntent.Exit:
-                    return "Goodbye! Closing the application...";
+                    mainWindow?.Close();
+                    return "Exiting application...";
 
                 case NLPProcessor.NlpIntent.None:
-                default:
-                    return "I didn't understand that. Try asking for 'help' to see what I can do.";
+                    if (result.Title.ToLower().Contains("what have you done"))
+                    {
+                        var recent = mainWindow?.GetRecentActivity(5);
+                        return "Here’s what I’ve done recently:\n" + string.Join("\n", recent ?? new List<string>());
+                    }
+                    return "I didn't understand that. Try asking for 'help'.";
             }
+
+            return "";
         }
+
 
         private void SendButton_Click(object sender, RoutedEventArgs e)
         {

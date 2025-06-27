@@ -9,7 +9,7 @@ namespace ST10449143_PROGPOEPART3
 {
     public partial class TaskAssistantControl : UserControl
     {
-        private ObservableCollection<CyberTask> tasks = new ObservableCollection<CyberTask>();
+        private ObservableCollection<CyberTask> tasks = new ObservableCollection<CyberTask>();        
 
         public TaskAssistantControl()
         {

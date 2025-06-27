@@ -6,7 +6,7 @@ namespace ST10449143_PROGPOEPART3
 {
     public partial class CyberSecurityQuizControl : UserControl
     {
-        private CyberSecurityQuiz quiz;
+        public CyberSecurityQuiz quiz;
 
         public CyberSecurityQuizControl()
         {

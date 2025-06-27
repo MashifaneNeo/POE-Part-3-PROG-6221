@@ -10,12 +10,13 @@ namespace ST10449143_PROGPOEPART3
     {
         public static string CurrentUserName { get; private set; } = "Guest";
 
-        private TaskAssistantControl taskAssistantControl;
+        public TaskAssistantControl taskAssistantControl;
         private CyberSecurityQuiz cyberQuiz;
-        private CyberSecurityQuizControl quizControl;
+        public CyberSecurityQuizControl quizControl;
         private ActivityLogControl activityLogControl;
         private DispatcherTimer clockTimer;
 
+        // Use only one collection for activity log; prefer Queue<string>
         private Queue<string> activityLog = new Queue<string>();
 
         public MainWindow()
@@ -24,6 +25,7 @@ namespace ST10449143_PROGPOEPART3
             ShowWelcomeDialog();              // Launch welcome dialog first
             InitializeApplicationComponents();
             AddActivityLogEntry($"User '{CurrentUserName}' started the application");
+            StartClock();
         }
 
         private void ShowWelcomeDialog()
@@ -56,6 +58,15 @@ namespace ST10449143_PROGPOEPART3
             UpdateStatusBar();
         }
 
+        /// <summary>
+        /// Public method to log activity messages, accessible from other classes
+        /// </summary>
+        /// <param name="message">Message to log</param>
+        public void LogActivity(string message)
+        {
+            AddActivityLogEntry(message);
+        }
+
         // Add entries to the activity log queue and refresh UI
         private void AddActivityLogEntry(string entry)
         {
@@ -68,6 +79,15 @@ namespace ST10449143_PROGPOEPART3
             // Refresh ActivityLogControl
             activityLogControl.RefreshLog(activityLog);
             UpdateStatusBar();
+        }
+
+        public List<string> GetRecentActivity(int count)
+        {
+            var recentEntries = new List<string>(activityLog);
+            recentEntries.Reverse();
+            if (count > recentEntries.Count)
+                count = recentEntries.Count;
+            return recentEntries.GetRange(0, count);
         }
 
         private void UpdateStatusBar()
@@ -113,7 +133,6 @@ namespace ST10449143_PROGPOEPART3
                 e.Cancel = true; // Cancel close
             }
         }
-
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
