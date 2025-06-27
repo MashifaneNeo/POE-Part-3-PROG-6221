@@ -1,0 +1,13 @@
+﻿<Window x:Class="ST10449143_PROGPOEPART3.WelcomeDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Welcome" Width="400" SizeToContent="Height"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+    <StackPanel Margin="15">
+        <TextBlock Text="Welcome to Cybersecurity Assistant" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+        <TextBlock Text="Please enter your name to continue:" Margin="0,0,0,5"/>
+        <TextBox x:Name="NameTextBox" Margin="0,0,0,15"/>
+        <Button Content="Continue" Click="ContinueButton_Click" IsDefault="True" 
+                HorizontalAlignment="Right" Padding="10,3"/>
+    </StackPanel>
+</Window>

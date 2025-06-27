@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace ST10449143_PROGPOEPART3
 {
@@ -26,104 +25,55 @@ namespace ST10449143_PROGPOEPART3
 
         public NlpResult AnalyzeInput(string input)
         {
-            input = input.ToLower().Trim().Replace(".", "").Replace("?", "");
+            if (string.IsNullOrWhiteSpace(input)) return new NlpResult { Intent = NlpIntent.None };
 
-            // Prioritize task management commands
-            if (IsTaskCommand(input, out var taskResult)) return taskResult;
+            input = input.ToLower().Trim();
 
-            // Then check for other commands
-            if (IsGeneralCommand(input, out var generalResult)) return generalResult;
+            if (input.StartsWith("add task") || input.StartsWith("create task") || input.StartsWith("set task"))
+            {
+                string title = input.Substring(input.IndexOf("task") + 4).Trim(new[] { '-', ' ', ':' });
+                return new NlpResult { Intent = NlpIntent.AddTask, Title = title };
+            }
+
+            if (input.StartsWith("remind me to") || input.StartsWith("set reminder to") || input.StartsWith("reminder to"))
+            {
+                string title = input.Substring(input.IndexOf("to") + 2).Trim();
+                return new NlpResult { Intent = NlpIntent.SetReminder, Title = title };
+            }
+
+            if (input.StartsWith("view tasks") || input.StartsWith("show tasks") || input.StartsWith("list tasks"))
+            {
+                return new NlpResult { Intent = NlpIntent.ViewTasks };
+            }
+
+            if (input.StartsWith("complete task") || input.StartsWith("finish task") || input.StartsWith("mark task"))
+            {
+                string title = input.Substring(input.IndexOf("task") + 4).Trim();
+                return new NlpResult { Intent = NlpIntent.CompleteTask, Title = title };
+            }
+
+            if (input.StartsWith("delete task") || input.StartsWith("remove task") || input.StartsWith("cancel task"))
+            {
+                string title = input.Substring(input.IndexOf("task") + 4).Trim();
+                return new NlpResult { Intent = NlpIntent.DeleteTask, Title = title };
+            }
+
+            if (input.Contains("start quiz") || input.Contains("begin quiz"))
+            {
+                return new NlpResult { Intent = NlpIntent.StartQuiz };
+            }
+
+            if (input == "help" || input == "show help")
+            {
+                return new NlpResult { Intent = NlpIntent.ShowHelp };
+            }
+
+            if (input == "exit" || input == "quit" || input == "close")
+            {
+                return new NlpResult { Intent = NlpIntent.Exit };
+            }
 
             return new NlpResult { Intent = NlpIntent.None };
-        }
-
-        private bool IsTaskCommand(string input, out NlpResult result)
-        {
-            result = new NlpResult { Intent = NlpIntent.None };
-
-            // Reminder command should come BEFORE AddTask
-            if (input.StartsWith("remind me to") || input.StartsWith("set a reminder to"))
-            {
-                result.Intent = NlpIntent.SetReminder;
-                result.Title = ExtractAfter(input, new[] { "remind me to", "set a reminder to" });
-                return true;
-            }
-
-            // Delete task commands (highest priority for task management)
-            if (input.Contains("delete task") || input.Contains("remove task") ||
-                input.Contains("erase task") || input.Contains("cancel task"))
-            {
-                result.Intent = NlpIntent.DeleteTask;
-                result.Title = ExtractAfter(input, new[] { "delete task", "remove task", "erase task", "cancel task" });
-                return true;
-            }
-
-            // Complete task commands
-            if (input.Contains("complete task") || input.Contains("mark task") ||
-                input.Contains("finish task") || input.Contains("task done"))
-            {
-                result.Intent = NlpIntent.CompleteTask;
-                result.Title = ExtractAfter(input, new[] { "complete task", "mark task", "finish task", "task done" });
-                return true;
-            }
-
-            // Add task commands
-            if (input.Contains("add task") || input.Contains("create task") ||
-                input.Contains("new task") || input.Contains("set task") ||
-                input.Contains("remind me to") || input.Contains("set a reminder to"))
-            {
-                result.Intent = NlpIntent.AddTask;
-                result.Title = ExtractAfter(input, new[] { "add task", "create task", "new task", "set task", "remind me to", "set a reminder to" });
-                return true;
-            }
-
-            // View tasks commands
-            if (input.Contains("view tasks") || input.Contains("show tasks") ||
-                input.Contains("list tasks") || input.Contains("my tasks"))
-            {
-                result.Intent = NlpIntent.ViewTasks;
-                return true;
-            }
-
-            return false;
-        }
-
-        private bool IsGeneralCommand(string input, out NlpResult result)
-        {
-            result = new NlpResult { Intent = NlpIntent.None };
-
-            if (input.Contains("start quiz") || input.Contains("begin quiz") || input.Contains("quiz time"))
-            {
-                result.Intent = NlpIntent.StartQuiz;
-                return true;
-            }
-
-            if (input.Contains("help") || input.Contains("what can i ask") || input.Contains("show help"))
-            {
-                result.Intent = NlpIntent.ShowHelp;
-                return true;
-            }
-
-            if (input.Contains("exit") || input.Contains("quit") || input.Contains("close bot"))
-            {
-                result.Intent = NlpIntent.Exit;
-                return true;
-            }
-
-            return false;
-        }
-
-        private string ExtractAfter(string input, string[] phrases)
-        {
-            foreach (var phrase in phrases)
-            {
-                if (input.Contains(phrase))
-                {
-                    int index = input.IndexOf(phrase);
-                    return input.Substring(index + phrase.Length).Trim();
-                }
-            }
-            return string.Empty;
         }
     }
 }

@@ -238,6 +238,11 @@ namespace ST10449143_PROGPOEPART3
             }
         }
 
+        public void StartQuizFromNLP()
+        {
+            StartQuiz();  // Assuming you have a StartQuiz() method
+        }
+
         private void EndQuiz()
         {
             IsQuizActive = false;

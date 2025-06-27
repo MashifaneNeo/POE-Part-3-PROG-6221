@@ -1,0 +1,36 @@
+﻿<UserControl x:Class="ST10449143_PROGPOEPART3.ActivityLogControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:ST10449143_PROGPOEPART3"
+             Height="Auto" Width="Auto">
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Text="Activity Log" 
+                   FontSize="20" 
+                   FontWeight="Bold" 
+                   Margin="0,0,0,10"
+                   Grid.Row="0"/>
+
+        <!-- Activity List -->
+        <ListView x:Name="LogListView" Grid.Row="1" Margin="0,0,0,10">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Timestamp" Width="200" DisplayMemberBinding="{Binding Timestamp}" />
+                    <GridViewColumn Header="Activity" Width="800" DisplayMemberBinding="{Binding Message}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <!-- Show More Button -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2">
+            <Button x:Name="ShowMoreButton" Content="Show More" Click="ShowMoreButton_Click" Margin="0,10,0,0"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
