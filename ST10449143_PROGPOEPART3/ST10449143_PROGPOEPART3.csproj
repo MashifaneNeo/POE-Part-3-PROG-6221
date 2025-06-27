@@ -59,6 +59,12 @@
     <Compile Include="ActivityLogControl.xaml.cs">
       <DependentUpon>ActivityLogControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ChatbotControl.xaml.cs">
+      <DependentUpon>ChatbotControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ChatbotWindow.xaml.cs">
+      <DependentUpon>ChatbotWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CyberSecurityQuiz.cs" />
     <Compile Include="CyberSecurityQuizControl.xaml.cs">
       <DependentUpon>CyberSecurityQuizControl.xaml</DependentUpon>
@@ -77,6 +83,14 @@
       <DependentUpon>WelcomeDialog.xaml</DependentUpon>
     </Compile>
     <Page Include="ActivityLogControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ChatbotControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ChatbotWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

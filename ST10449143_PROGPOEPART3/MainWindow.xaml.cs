@@ -98,6 +98,11 @@ namespace ST10449143_PROGPOEPART3
             });
         }
 
+        private void OpenChatbot_Click(object sender, RoutedEventArgs e)
+        {
+            MainTabControl.SelectedItem = ChatbotTab; // Switch to chatbot tab
+        }
+
 
         private void MainTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
